@@ -66,6 +66,7 @@
 }
 .mini_navbar .logo-element{
     display: block;
+    text-align: center;
 }
 .menu_item{
     display: block;

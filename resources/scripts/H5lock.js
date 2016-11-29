@@ -172,12 +172,13 @@
                 if (Math.abs(po.x - pt.x) < this.r && Math.abs(po.y - pt.y) < this.r) {
 
                     var prePoint = this.lastPoint[this.lastPoint.length - 1];
+                    this.drawSeledCle(pt.x, pt.y);
                     this.drawLine(prePoint, pt);
                     this.drawArrow(prePoint, pt);
 
                     this.lastPoint.push(pt);
                     this.restPoint.splice(i, 1);
-                    this.drawSeledCle(pt.x, pt.y);
+                    
                     break;
                 }
             }
@@ -270,12 +271,12 @@
                         var circle = circles[j];
                         if(circle.index == point.index){                            
                             this.lastPoint.push(circle);
+                            this.drawSeledCle(circle.x, circle.y);
                             if(i >0){
                                 var lastPoint2 = this.lastPoint.splice(0,1)[0];
                                 this.drawLine(lastPoint2, circle);
                                 this.drawArrow(lastPoint2, circle);                                
-                            }
-                            this.drawSeledCle(circle.x, circle.y);
+                            }                            
                         }
                     }
                 }
