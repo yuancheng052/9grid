@@ -68,20 +68,19 @@
             <div class="nav_right"><span id="nav_top_txt">Generate</span></div>
         </div>
         <div id="div_content" class="div_content">
-            <div id="content_canvas" class="content_item content_item_focus">
-                <div class="div_tool">
-                    <a class="menu_item" href="javascript:void(0)" id="bt_random"><i class="fa fa-home fa-bolt"></i></a>
-                    <a class="menu_item" href="javascript:void(0)" id="bt_hand"><i class="fa fa-home fa-pencil"></i></a>
-                </div>
+            <div id="content_canvas" class="content_item content_item_focus">                
                 <div class="div_canvas">
-                    <canvas id="canvas" width="500px" height="500px"></canvas>
-                </div> 
-
+                    <canvas id="canvas" width="400px" height="400px"></canvas>
+                </div>
+                <div class="div_tool">
+                    <a class="tool_btn" href="javascript:void(0)" id="bt_random"><i class="fa fa-home fa-bolt"></i></a>
+                    <a class="tool_btn" href="javascript:void(0)" id="bt_hand"><i class="fa fa-home fa-pencil"></i></a>
+                </div>
                 <div>
                     <textarea id="remark" style="width:100%;height:50px;"></textarea>
                 </div>
                 <div class="bottom_btn">
-                    <input type="button" id="bt_save" value="save"/>
+                    <input type="button" id="bt_save" class="btn btn-primary" style="width: 150px;" value="save"/>
                 </div>
             </div>    
             <div id="content_my" class="content_item">

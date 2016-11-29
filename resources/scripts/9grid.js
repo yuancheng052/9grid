@@ -1,6 +1,6 @@
 window._9grid = {};
 $(function(){	
-    $('.nav_menu .menu_item').each(function(){
+    $('.nav_menu .menu_item,.div_tool .tool_btn').each(function(){
     	$(this).mouseover(function(){
     		$(this).addClass('focusin');
     	}).mouseout(function(){
@@ -43,9 +43,17 @@ $(function(){
                 _9grid.init_setting();
                 break;
             default:               
-        }    
+        }   
+        $('.nav_default').height($('.wrapper').height()); 
     }
     $('#nav_btn').click(function(){
         $('.wrapper').toggleClass('mini_navbar');
+    });
+    $(window).bind('load resize',function(){
+        if($('.wrapper').width() <768 ){
+            $('.wrapper').addClass('mini_navbar');
+        }else{
+            $('.wrapper').removeClass('mini_navbar');
+        }
     });
 })

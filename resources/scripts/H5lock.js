@@ -2,7 +2,8 @@
         window.H5lock = function(obj){
             this.height = obj.height;
             this.width = obj.width;
-            this.point_fill_color = obj.point_fill_color?(obj.point_fill_color): '#CFE6FF';
+            this.point_fill_color = obj.point_fill_color?(obj.point_fill_color): '#D3D3D3';
+            this.point_seled_color = '#2F2FFF';
             this.shadow_out_x = obj.shadow_out_x;
             this.shadow_out_y = obj.shadow_out_y;
             this.shadow_in_x = obj.shadow_in_x;
@@ -58,33 +59,27 @@
             this.ctx.stroke();
         }
 
-        H5lock.prototype.drawCle = function(x, y) {            
-           
-           this.ctx.beginPath();   
-           //this.ctx.lineWidth = 0;
-            if(false){           
-                /*var t = this.r+5;     
-                this.ctx.moveTo(x-t, y-t);
-                this.ctx.lineTo(x+t, y-t);
-                this.ctx.lineTo(x+t, y+t);
-                this.ctx.lineTo(x-t, y+t);                
-                this.ctx.lineTo(x-t, y-t);*/
-                this.ctx.arc(x, y, this.r+1, 0, Math.PI * 2,  false);  
-                
-            }
-            //
-
+        H5lock.prototype.drawCle = function(x, y) {           
+            this.ctx.beginPath();            
+            this.ctx.arc(x, y, this.r, 0, Math.PI * 2, true);  
+            this.ctx.closePath();
+            this.ctx.fill();                      
+        }        
+        H5lock.prototype.drawSeledCle = function(x, y){
+            this.ctx.fillStyle = this.point_seled_color;
+            this.ctx.beginPath();            
             this.ctx.arc(x, y, this.r, 0, Math.PI * 2, true);  
             this.ctx.closePath();
             this.ctx.fill();
-                      
-        }        
+            //restore 
+            this.ctx.fillStyle = this.point_fill_color;
+        }    
        
         H5lock.prototype.drawLine = function(fromPt, toPt) {
 
             this.ctx.shadowOffsetX = null;
-             this.ctx.shadowOffsetY = null;
-             this.ctx.shadowColor = null;
+            this.ctx.shadowOffsetY = null;
+            this.ctx.shadowColor = null;
             this.ctx.beginPath();
             this.ctx.lineWidth = this.line_size;
             this.ctx.strokeStyle = this.line_color;
@@ -182,7 +177,7 @@
 
                     this.lastPoint.push(pt);
                     this.restPoint.splice(i, 1);
-                    
+                    this.drawSeledCle(pt.x, pt.y);
                     break;
                 }
             }
@@ -202,7 +197,7 @@
             this.init_panel();
             this.bindEvent();
             return this;
-        }       
+        }           
         H5lock.prototype.bindEvent = function() {
             var self = this;
             
@@ -232,6 +227,7 @@
                         self.touchFlag = true;
                         self.lastPoint.push(self.arr[i]);
                         self.restPoint.splice(i,1);
+                        self.drawSeledCle(self.arr[i].x, self.arr[i].y);
                         break;
                     }
                 }
@@ -277,8 +273,9 @@
                             if(i >0){
                                 var lastPoint2 = this.lastPoint.splice(0,1)[0];
                                 this.drawLine(lastPoint2, circle);
-                                this.drawArrow(lastPoint2, circle);
+                                this.drawArrow(lastPoint2, circle);                                
                             }
+                            this.drawSeledCle(circle.x, circle.y);
                         }
                     }
                 }

@@ -13,12 +13,12 @@ window.usr_setting = {};
     })
     function init_data(){
 		usr_setting = {
-			point_fill_color:'#CFE6FF',
+			point_fill_color:'#D3D3D3',
 			shadow_out_x:2,
             shadow_out_y:2,
             shadow_in_x:2,
             shadow_in_y:2,
-            shadow_color:'#00FF00',
+            shadow_color:'#808080',
             line_size:3,
             line_color:'#FF0000',
             line_type:'dash'
