@@ -154,9 +154,18 @@
         }
         H5lock.prototype.getPosition = function(e) {// 获取touch点相对于canvas的坐标
             var rect = e.currentTarget.getBoundingClientRect();
+            var clientX = null;
+            var clientY = null;
+            if(e instanceof TouchEvent){
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            }else{
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
             var po = {
-                x: e.touches[0].clientX - rect.left,
-                y: e.touches[0].clientY - rect.top
+                x: clientX - rect.left,
+                y: clientY - rect.top
               };
             return po;
         }       
@@ -196,12 +205,21 @@
         }       
         H5lock.prototype.bindEvent = function() {
             var self = this;
-            this.canvas.addEventListener("touchstart", touchStart, false);
+            
+
+            this.canvas.addEventListener("mousedown ", touchStart, false);
+            this.canvas.addEventListener("mousemove", touchMove, false);
+            this.canvas.addEventListener("mouseup ", touchEnd, false);
+
+            this.canvas.addEventListener("touchstart", touchStart, false);            
             this.canvas.addEventListener("touchmove", touchMove, false);
             this.canvas.addEventListener("touchend", touchEnd, false);
-            document.addEventListener('touchmove', function(e){
+            this.canvas.onmousedown = touchStart;
+            this.canvas.onmousemove = touchMove;
+            this.canvas.onmouseup = touchEnd;
+            /*document.addEventListener('touchmove', function(e){
                 e.preventDefault();
-            },false);           
+            },false);          */ 
 
              function touchStart(e) {
                 e.preventDefault();// 某些android 的 touchmove不宜触发 所以增加此行代码

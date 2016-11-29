@@ -15,8 +15,10 @@ $(function(){
 
     $('.content_item_focus').removeClass('content_item_focus');
     var menu_item = location.hash;
-    if(menu_item !=null){
+    if(menu_item !=null && menu_item !=''){
         menu_item = menu_item.replace('#','');
+    }else{
+        menu_item = 'content_canvas';
     }
     $('#'+menu_item).addClass('content_item_focus');
 
@@ -40,7 +42,7 @@ $(function(){
                 $('#nav_top_txt').html('Preferences');
                 _9grid.init_setting();
                 break;
-            default :
+            default:               
         }    
     }
     $('#nav_btn').click(function(){
