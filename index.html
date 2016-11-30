@@ -7,7 +7,8 @@
     <link rel="stylesheet" type="text/css" href="resources/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="resources/css/datatables.min.css">
     <link rel="stylesheet" type="text/css" href="resources/css/9grid.css">
-    <script src="resources/scripts/jquery-1.7.1.min.js"></script>
+    <script src="resources/scripts/jquery-1.11.0.js"></script>
+    <script src="resources/scripts/bootstrap.min.js"></script>
     <script src="resources/scripts/common.js"></script>
     <script type="text/javascript" src="resources/scripts/dateformat.js"></script>
     <script type="text/javascript" src="resources/scripts/H5lock.js"></script>
@@ -128,17 +129,53 @@
                 <div class="div_relative">
                     <div><span class="setting_font">Connect Line</span></div>
                     <div class="align_right">
+                    <!--
                         <select id="line_size" style="border: 0px;width:32px;height:32px;padding:0px;background: url(images/main/line_size.png)">
                             <option value="1" >1</option>
                             <option value="2" >2</option>
                             <option value="3" >3</option>
                             <option value="4" >4</option>
                         </select>
+                        -->
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" >
+                                <img src="images/main/line_size.png"/>
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                                <li>
+                                    <a><hr style="height: 1px; background: #000000;" /></a>
+                                </li>
+                                <li>
+                                    <a><hr style="height: 2px; background: #000000;" /></a>
+                                </li>
+                                <li>
+                                    <a><hr style="height: 5px; background: #000000;" /></a>
+                                </li>                                
+                            </ul>
+                        </div>
                         <input type="color" id="line_color" style="border: 0px;padding: 0px;" /> 
+                        <!--
                         <select id="line_type" >
                             <option value="solid">solid</option>
                             <option value="dashed">dashed</option>
                         </select>
+                        -->
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" >
+                                <img src="images/main/line_dash.png"/>
+                            </button>
+                            <ul class="dropdown-menu" role="menu" style="width: 30px;">
+                                <li >
+                                <a>
+                                    <hr style="height: 1px; background: #000000;margin-left: 5px;margin-right: 5px;" /></a>
+                                </li>
+                                <li >
+                                <a>
+                                    <hr style="height: 1px; border-top: 1px dashed #000000;margin-left: 5px;margin-right: 5px;" />
+                                </a>
+                                </li>                                                        
+                            </ul>
+                        </div>
                     </div>
                 </div>
                 <div><hr class="setting_hr" /></div>
