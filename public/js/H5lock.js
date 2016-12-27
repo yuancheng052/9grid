@@ -24,9 +24,9 @@
             }
             
         };
-        H5lock.lib = '9grid_lib';
-        H5lock.my = '9grid_my';
-        H5lock.root = '';
+        H5lock.lib = 'grid_lib';
+        H5lock.my = 'grid_my';
+        H5lock.root = BS.b$.App.getAppDataHomeDir();
 
         function getDis(a, b) {
             return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
@@ -152,7 +152,8 @@
             var rect = e.currentTarget.getBoundingClientRect();
             var clientX = null;
             var clientY = null;
-            if(e instanceof TouchEvent){
+            //if(e instanceof TouchEvent){
+            if(false){
                 clientX = e.touches[0].clientX;
                 clientY = e.touches[0].clientY;
             }else{
@@ -248,55 +249,76 @@
              }
         }
        
-        H5lock.get_random_item = function(){
-            var datas = H5lock.get_datas(H5lock.my);
-            if(datas.length >0){
-                var random = Math.random()*datas.length;
-                random = parseInt(random);
-                random = random == datas.length?random-1:random;
-                var item = datas[random];
-                return item;
-            }
+        H5lock.get_random_item = function(cb){
+
+            $.when(H5lock.get_indexs(H5lock.lib)).done(function(indexs){
+                if(indexs.length >0){
+                    var random = Math.random()*indexs.length;
+                    random = parseInt(random);
+                    random = random == indexs.length?random-1:random;
+                    var item = indexs[random];
+                    $.when(H5lock.read_file(item.file)).done(function(content){
+                        if(content !=''){
+                            item_data = JSON.parse(content);
+                            cb(item_data);
+                        }
+                    });
+                         
+                }
+            });
+            
         }
         H5lock.prototype.draw_random = function(item){
             if(item ==null){
-                item = H5lock.get_random_item();    
+                H5lock.get_random_item(call_back);    
+            }else{
+                call_back(item);
             }
-            this.init_panel();
-            var pts = item.pts;
-            var circles = this.arr;
-            if(pts !=null && pts.length >0 ){
-                for(var i=0; i<pts.length; i++){
-                    var point = pts[i];
-                    for(j in circles){
-                        var circle = circles[j];
-                        if(circle.index == point.index){                            
-                            this.lastPoint.push(circle);
-                            this.drawSeledCle(circle.x, circle.y);
-                            if(i >0){
-                                var lastPoint2 = this.lastPoint.splice(0,1)[0];
-                                this.drawLine(lastPoint2, circle);
-                                this.drawArrow(lastPoint2, circle);                                
-                            }                            
+            var self = this;
+            function call_back(item_data){
+                self.init_panel();
+                var pts = item_data.pts;
+                var circles = self.arr;
+                if(pts !=null && pts.length >0 ){
+                    for(var i=0; i<pts.length; i++){
+                        var point = pts[i];
+                        for(j in circles){
+                            var circle = circles[j];
+                            if(circle.index == point.index){                            
+                                self.lastPoint.push(circle);
+                                self.drawSeledCle(circle.x, circle.y);
+                                if(i >0){
+                                    var lastPoint2 = self.lastPoint.splice(0,1)[0];
+                                    self.drawLine(lastPoint2, circle);
+                                    self.drawArrow(lastPoint2, circle);                                
+                                }                            
+                            }
                         }
                     }
                 }
             }
+            
         }
-        H5lock.prototype.dir_init = function(){
+        H5lock.dir_init = function(){
 
-            var root = H5lock.root+'/';       
+            var root = H5lock.root+'/';      
             var exist = BS.b$.App.checkPathIsExist(root+H5lock.lib);
             if(!exist){
-                BS.b$.App.createDir(root+H5lock.lib, {}, function(obj){
+                BS.b$.App.createDir(root+H5lock.lib+'/', {}, function(obj){
                     console.log('createDir'+H5lock.lib+' success!');      
                     
                 });
-                BS.b$.App.createDir(root+H5lock.my, {}, function(obj){
+                BS.b$.App.createDir(root+H5lock.my+'/', {}, function(obj){
                     console.log('createDir'+H5lock.my+' success!');      
                     
-                });   
-            }            
+                });
+                BS.b$.App.createEmptyFile(root+H5lock.lib+'.txt',function(obj){
+                    console.log('create file'+H5lock.lib+'.txt');
+                });
+                BS.b$.App.createEmptyFile(root+H5lock.my+'.txt',function(obj){
+                    console.log('create file'+H5lock.my+'.txt');
+                });
+            }
         }
         H5lock.prototype.save = function(){
 
@@ -311,126 +333,162 @@
                 remark : remark,
                 img : img,
                 date : date
-            }
+            }            
             H5lock.insert_item(H5lock.my, item);
 
         }
         H5lock.insert_item = function(type, item){
             
-            var root = H5lock.root;
-            var path = root + '/'+type+'/'+item_key+'.txt';
+            var root = H5lock.root;//.replace(' ','%20');
+            var path = root + '/'+type+'/'+item.key+'.txt';
 
             BS.b$.Binary.createTextFile({
                 filePath: path,
-                data: JSON.stringify(item), 
-                offset: 0,  
-                dataAppend: false, 
-            }, function(info){
-                console.log('create txt success!');
-            });
-
-            var indexs = H5lock.get_indexs(type);
-            indexs.push(item);
-            item.file = path;
-            H5lock.set_indexs(index_file, indexs);
+                text: JSON.stringify(item), 
+                }, function(info){
+                
+                console.log('create file'+path+' success!');
+                $.when(H5lock.get_indexs(type)).done(function(indexs){
+                var index = {
+                    key:item.key,
+                    remark:item.remark                
+                }
+                index.file = path;
+                indexs.push(index);
+                H5lock.set_indexs(type, indexs);
+                });
+            });           
         }
-        H5lock.get_item = function(type, key, datas){
+        H5lock.get_index_item = function(type, key, indexs){
 
-            /*datas = datas==null?H5lock.get_datas(key): datas;
-            if(datas && datas.length >0){
-                for (var i = 0; i<datas.length; i++) {
-                    if(datas[i].key == item_key){
-                        return datas[i];
+            var dtd = $.Deferred();
+            var item = null;
+            if(indexs !=null && indexs.length >0){
+                for(var i=0; i<indexs.length; i++){
+                    if(key == indexs[i].key){
+                        item = indexs[i];
+                        break;
                     }
                 }
-            }
-            return null;*/
-            var indexs = H5lock.get_indexs(type);
-            var file = null;
-            for(var i=0; i<indexs.length; i++){
-                if(key == indexs[i].key){
-                    file = indexs[i].file;
-                }
-            }
-            if(file){
-                var data = BS.b$.Binary.getUTF8TextContentFromFile({
-                    filePath: file,
-                    encode: "utf8", 
-                    async: true,    
-                    dataAppend: false, 
-                }, function(info){
-                    console.log($.obj2string(info));
+                dtd.resolve(item);
+            }else{
+                $.when(H5lock.get_indexs(type)).done(function(indexs){
+                    for(var i=0; i<indexs.length; i++){
+                        if(key == indexs[i].key){
+                            item = indexs[i];
+                            break;
+                        }
+                    }
+                    dtd.resolve(item);                    
                 });
-                return JSON.parse(data);
-            }
-        }
+            }            
+            return dtd.promise();            
+        }        
         H5lock.del_item = function(item_key){
 
-            var indexs = H5lock.get_indexs(H5lock.my);
-            var item = H5lock.get_item(H5lock.my, item_key, indexs);
-            if(item !=null){
-                indexs.remove(item);
-            }
-            H5lock.set_datas(H5lock.my, indexs);
+            $.when(H5lock.get_indexs(H5lock.my)).done(function(indexs){
+                $.when(H5lock.get_index_item(H5lock.my, item_key, indexs)).done(function(item){
+                    if(item !=null){
+                        indexs.remove(item);
+                    }
+                    H5lock.set_indexs(H5lock.my, indexs);
+                });
+            });            
         }
 
         H5lock.clone_2 = function(item_key, src, target){
 
-            var new_item = H5lock.get_item(src, item_key);
-            var indexs = H5lock.get_indexs(target);
-            var old_item = H5lock.get_item(target, item_key);
-            if(old_item == null){
-                indexs.push(new_item);
-            }else{
-                var index = indexs.indexOf(old_item);
-                indexs[index] = new_item;                
-            }
-            H5lock.set_indexs(target, indexs);
+            $.when(H5lock.get_indexs(target)).done(function(indexs){
+                $.when(H5lock.get_index_item(src, item_key)).done(function(new_item){
+                    $.when(H5lock.get_index_item(target, item_key, indexs)).done(function(old_item){
+                        if(old_item == null){
+                            indexs.push(new_item);
+                        }else{
+                            var index = indexs.indexOf(old_item);
+                            indexs[index] = new_item;                
+                        }
+                        H5lock.set_indexs(target, indexs);
+                    });
+                });
+                
+            });
+
         }
 
         H5lock.get_indexs = function(type){
 
+            var dtd = $.Deferred();
             var index_file = H5lock.root+'/'+type+'.txt';
-            var data = BS.b$.Binary.getUTF8TextContentFromFile({
-                filePath: index_file,
-                encode: "utf8", 
-                async: true,     
-                dataAppend: false, 
-            }, function(info){
-                console.log($.obj2string(info));
+            
+            $.when(H5lock.read_file(index_file)).done(function(content){
+                var data = null;
+                if(content !=''){
+                    data = JSON.parse(content);
+                }else{
+                    data = [];
+                }
+                dtd.resolve(data);
+
             });
-            data = JSON.parse(data);
-            return data;
+            return dtd.promise();           
         }
 
-        H5lock.get_datas = function(type){
+        H5lock.read_file = function(file_path){
+            var dtd = $.Deferred();
+            BS.b$.Binary.getUTF8TextContentFromFile({
+                filePath: file_path
+                }, function(obj){
+                if(obj.success){
+                    console.log('get file'+file_path+' success ');
+                    dtd.resolve(obj.content.replace(/\r|\n/,''));
+                }else{
+                    //return [];
+                    dtd.resolve('');
+                }                
+            });
+            return dtd.promise();
+        }
+
+        H5lock.get_datas = function(type, cb){
             
-            var indexs = H5lock.get_indexs(type);
-            var datas= [];
-            for(var i=0; i<indexs.length; i++){
-                var file = indexs[i].file;
-                var data = BS.b$.Binary.getUTF8TextContentFromFile({
-                    filePath: file,
-                    encode: "utf8", 
-                    async: true,    
-                    dataAppend: false, 
-                }, function(info){
-                    console.log($.obj2string(info));
-                });
-                datas.push(JSON.parse(data);
-            }
-            return datas;
+            var dtd = $.Deferred();
+            $.when(H5lock.get_indexs(type)).done(function(indexs){
+                var datas= [];
+                for(var i=0; i<indexs.length; i++){
+                    var file = indexs[i].file;                    
+                    (function(i){
+                        $.when(H5lock.read_file(file)).done(function(content){
+                            if(content !=''){
+                                datas.push(JSON.parse(content));
+                            }else{
+                                datas.push({});
+                            }
+                            if(i ==indexs.length-1){
+                                dtd.resolve(datas);    
+                            }                        
+                        })
+                    })(i);
+                    
+                }                
+            });
+            return dtd.promise();            
         }
 
         H5lock.set_indexs = function(type, data){
 
             var index_file = H5lock.root+'/'+type+'.txt';
-            BS.b$.Binary.base64ToFile({
+            /*BS.b$.Binary.base64ToFile({
                 filePath: index_file,
                 base64String: JSON.stringify(data),
                 dataAppend: false, 
             }, function(info){
                 console.log($.obj2string(info));
+            });*/
+            BS.b$.Binary.createTextFile({
+                filePath: index_file,
+                text: JSON.stringify(data), 
+                }, function(info){
+                console.log('update '+type+'.txt success!');
             });
         }
 
