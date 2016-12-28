@@ -7,11 +7,12 @@
     <link rel="stylesheet" type="text/css" href="styles/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="styles/datatables.min.css">
     <link rel="stylesheet" type="text/css" href="styles/9grid.css">
+    <link rel="stylesheet" type="text/css" href="styles/spectrum.css">
     <script src="js/jquery-1.11.0.js"></script>
     <script type="text/javascript" src="js/util.js"></script>
     <script type="text/javascript" src="js/bs.js"></script>
     <script type="text/javascript" src="js/test.js"></script>
-    <script src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
     <script src="js/common.js"></script>
     <script type="text/javascript" src="js/dateformat.js"></script>
     <script type="text/javascript" src="js/H5lock.js"></script>
@@ -21,6 +22,7 @@
     <script type="text/javascript" src="js/9grid_my.js"></script>
     <script type="text/javascript" src="js/9grid_lib.js"></script>
     <script type="text/javascript" src="js/9grid_setting.js"></script>
+    <script type="text/javascript" src="js/spectrum.js"></script>
     <title>9GridHelper</title>    
 </head>
 <body>
@@ -111,7 +113,7 @@
                 <div class="div_relative">
                     <div><span class="setting_font">Grid Point Fill</span></div> 
                     <div class="align_right">
-                        <input  type="color" id="point_fill_color" value="#FF0000" /> 
+                        <input  type="text" id="point_fill_color" value="#FF0000" /> 
                     </div>                                       
                 </div>
                 <div><hr class="setting_hr" /></div>
@@ -132,47 +134,33 @@
                 <div class="div_relative">
                     <div><span class="setting_font">Connect Line</span></div>
                     <div class="align_right">
-                    <!--
-                        <select id="line_size" style="border: 0px;width:32px;height:32px;padding:0px;background: url(images/line_size.png)">
-                            <option value="1" >1</option>
-                            <option value="2" >2</option>
-                            <option value="3" >3</option>
-                            <option value="4" >4</option>
-                        </select>
-                        -->
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" >
+                        <div id="line_size" class="btn-group">
+                            <button  type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" >
                                 <img src="images/line_size.png"/>
                             </button>
                             <ul class="dropdown-menu" role="menu">
-                                <li>
+                                <li data="1">
                                     <a><hr style="height: 1px; background: #000000;" /></a>
                                 </li>
-                                <li>
+                                <li data="2">
                                     <a><hr style="height: 2px; background: #000000;" /></a>
                                 </li>
-                                <li>
+                                <li data="3">
                                     <a><hr style="height: 5px; background: #000000;" /></a>
                                 </li>                                
                             </ul>
                         </div>
-                        <input type="color" id="line_color" style="border: 0px;padding: 0px;" /> 
-                        <!--
-                        <select id="line_type" >
-                            <option value="solid">solid</option>
-                            <option value="dashed">dashed</option>
-                        </select>
-                        -->
-                        <div class="btn-group">
+                        <input type="text" id="line_color" style="border: 0px;padding: 0px;" value=""/> 
+                        <div id="line_type" class="btn-group">
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" >
                                 <img src="images/line_dash.png"/>
                             </button>
                             <ul class="dropdown-menu" role="menu" style="width: 30px;">
-                                <li >
+                                <li data="solid">
                                 <a>
                                     <hr style="height: 1px; background: #000000;margin-left: 5px;margin-right: 5px;" /></a>
                                 </li>
-                                <li >
+                                <li data="dash">
                                 <a>
                                     <hr style="height: 1px; border-top: 1px dashed #000000;margin-left: 5px;margin-right: 5px;" />
                                 </a>

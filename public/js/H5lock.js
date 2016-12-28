@@ -26,7 +26,10 @@
         };
         H5lock.lib = 'grid_lib';
         H5lock.my = 'grid_my';
+
         H5lock.root = BS.b$.App.getAppDataHomeDir();
+
+        H5lock.profile = 'user_profile';
 
         function getDis(a, b) {
             return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
@@ -318,6 +321,9 @@
                 BS.b$.App.createEmptyFile(root+H5lock.my+'.txt',function(obj){
                     console.log('create file'+H5lock.my+'.txt');
                 });
+                BS.b$.App.createEmptyFile(root+H5lock.profile+'.txt',function(obj){
+                    console.log('create file'+H5lock.profile+'.txt');
+                });
             }
         }
         H5lock.prototype.save = function(){
@@ -431,23 +437,7 @@
 
             });
             return dtd.promise();           
-        }
-
-        H5lock.read_file = function(file_path){
-            var dtd = $.Deferred();
-            BS.b$.Binary.getUTF8TextContentFromFile({
-                filePath: file_path
-                }, function(obj){
-                if(obj.success){
-                    console.log('get file'+file_path+' success ');
-                    dtd.resolve(obj.content.replace(/\r|\n/,''));
-                }else{
-                    //return [];
-                    dtd.resolve('');
-                }                
-            });
-            return dtd.promise();
-        }
+        }        
 
         H5lock.get_datas = function(type, cb){
             
@@ -477,18 +467,52 @@
         H5lock.set_indexs = function(type, data){
 
             var index_file = H5lock.root+'/'+type+'.txt';
-            /*BS.b$.Binary.base64ToFile({
-                filePath: index_file,
-                base64String: JSON.stringify(data),
-                dataAppend: false, 
-            }, function(info){
-                console.log($.obj2string(info));
-            });*/
+            H5lock.write_file(index_file, JSON.stringify(data));            
+        }
+
+        H5lock.get_profile = function(){
+
+            var dtd = $.Deferred();
+            var file_path = H5lock.root+'/'+H5lock.profile+'.txt';
+            $.when(H5lock.read_file(file_path)).done(function(content){
+                var profile = null;
+                if(content !=''){
+                    profile = JSON.parse(content);
+                }
+                dtd.resolve(profile);
+
+            });
+            return dtd.promise();
+        }
+        H5lock.write_profile = function(data){
+
+            var file_path = H5lock.root+'/'+H5lock.profile+'.txt';
+            H5lock.write_file(file_path, JSON.stringify(data));
+
+        }        
+
+        H5lock.read_file = function(file_path){
+            var dtd = $.Deferred();
+            BS.b$.Binary.getUTF8TextContentFromFile({
+                filePath: file_path
+                }, function(obj){
+                if(obj.success){
+                    console.log('get file'+file_path+' success ');
+                    dtd.resolve(obj.content.replace(/\r|\n/,''));
+                }else{
+                    //return [];
+                    dtd.resolve('');
+                }                
+            });
+            return dtd.promise();
+        }
+
+        H5lock.write_file = function(file_path, data){
             BS.b$.Binary.createTextFile({
-                filePath: index_file,
-                text: JSON.stringify(data), 
+                filePath: file_path,
+                text: data, 
                 }, function(info){
-                console.log('update '+type+'.txt success!');
+                console.log('update '+file_path+'.txt success!');
             });
         }
 
