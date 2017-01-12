@@ -302,7 +302,7 @@
             }
             
         }
-        H5lock.dir_init = function(){
+        H5lock.app_init = function(){
 
             var root = H5lock.root+'/';      
             var exist = BS.b$.App.checkPathIsExist(root+H5lock.lib);
@@ -315,9 +315,22 @@
                     console.log('createDir'+H5lock.my+' success!');      
                     
                 });
-                BS.b$.App.createEmptyFile(root+H5lock.lib+'.txt',function(obj){
-                    console.log('create file'+H5lock.lib+'.txt');
-                });
+                //init libs
+                var libs = init_lib_indexs;
+                var datas = init_lib_datas;
+                for(var i=0; i<libs.length; i++){
+                    var item = libs[i];
+                    item.file = root+H5lock.lib+'/'+item.key+'.txt';     
+                    var key = item.key;
+                    var file_path = item.file;
+                   // (function(key, file_path){
+                        $.when(H5lock.get_index_item(null, key, datas)).done(function(content){
+                            H5lock.write_file(file_path, JSON.stringify(content));
+                        });    
+                   // })(item.key, item.file);                                        
+                }
+                
+                H5lock.write_file(root+H5lock.lib+'.txt', JSON.stringify(libs));
                 BS.b$.App.createEmptyFile(root+H5lock.my+'.txt',function(obj){
                     console.log('create file'+H5lock.my+'.txt');
                 });
@@ -326,45 +339,7 @@
                 });
             }
         }
-        H5lock.prototype.save = function(){
-
-            H5lock.dir_init();
-            var pts = this.lastPoint;
-            var remark = $(this.remark).val();
-            var img = this.canvas.toDataURL("image/png"); 
-            var date = new Date().valueOf();
-            var item = {
-                key : date,
-                pts : pts,
-                remark : remark,
-                img : img,
-                date : date
-            }            
-            H5lock.insert_item(H5lock.my, item);
-
-        }
-        H5lock.insert_item = function(type, item){
-            
-            var root = H5lock.root;//.replace(' ','%20');
-            var path = root + '/'+type+'/'+item.key+'.txt';
-
-            BS.b$.Binary.createTextFile({
-                filePath: path,
-                text: JSON.stringify(item), 
-                }, function(info){
-                
-                console.log('create file'+path+' success!');
-                $.when(H5lock.get_indexs(type)).done(function(indexs){
-                var index = {
-                    key:item.key,
-                    remark:item.remark                
-                }
-                index.file = path;
-                indexs.push(index);
-                H5lock.set_indexs(type, indexs);
-                });
-            });           
-        }
+        
         H5lock.get_index_item = function(type, key, indexs){
 
             var dtd = $.Deferred();
@@ -402,18 +377,23 @@
             });            
         }
 
-        H5lock.clone_2 = function(item_key, src, target){
+        H5lock.clone_2 = function(item_key, src, target, cb){
 
             $.when(H5lock.get_indexs(target)).done(function(indexs){
                 $.when(H5lock.get_index_item(src, item_key)).done(function(new_item){
                     $.when(H5lock.get_index_item(target, item_key, indexs)).done(function(old_item){
                         if(old_item == null){
                             indexs.push(new_item);
+                            //
+                            var new_path = H5lock.root+ '/'+target+'/'+new_item.key+'.txt';       
+                            var old_path = new_item.file;                           
+                            new_item.file = new_path;
+                            H5lock.set_indexs(target, indexs);
+                            H5lock.copy_file(old_path, new_path, cb);
                         }else{
-                            var index = indexs.indexOf(old_item);
-                            indexs[index] = new_item;                
+                            alert('the item has in lib, can not be cloned!');
                         }
-                        H5lock.set_indexs(target, indexs);
+                        
                     });
                 });
                 
@@ -489,7 +469,19 @@
             var file_path = H5lock.root+'/'+H5lock.profile+'.txt';
             H5lock.write_file(file_path, JSON.stringify(data));
 
-        }        
+        }      
+
+        H5lock.copy_file = function(src, target, cb){
+            BS.b$.App.copyFile({
+                src:src,
+                dest:target
+            },function(){
+                if(cb){
+                    console.log('copy file from '+src+' to '+target+' success!');
+                    cb();
+                }
+            });
+        }
 
         H5lock.read_file = function(file_path){
             var dtd = $.Deferred();
@@ -508,12 +500,16 @@
         }
 
         H5lock.write_file = function(file_path, data){
+            var dtd = $.Deferred();
             BS.b$.Binary.createTextFile({
                 filePath: file_path,
                 text: data, 
                 }, function(info){
-                console.log('update '+file_path+'.txt success!');
+                console.log('update '+file_path+'success!');
+                dtd.resolve();
             });
+            return dtd.promise();
         }
+        H5lock.app_init();
 
 })();

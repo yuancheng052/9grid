@@ -9,8 +9,7 @@ $(function(){
     		$(this).addClass('focusin');
     	}).blur(function(){
     		$(this).removeClass('focusin');
-    	});
-        
+    	});        
     });
 
     $('.content_item_focus').removeClass('content_item_focus');
@@ -21,6 +20,7 @@ $(function(){
         menu_item = 'content_canvas';
     }
     $('#'+menu_item).addClass('content_item_focus');
+    $('.nav_menu .menu_item[href*="'+menu_item+'"]').addClass('selected');
 
     init(menu_item);
 

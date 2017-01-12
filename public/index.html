@@ -13,7 +13,9 @@
     <script type="text/javascript" src="js/bs.js"></script>
     <script type="text/javascript" src="js/test.js"></script>
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
-    <script src="js/common.js"></script>
+    <script type="text/javascript" ssssrc="js/common.js"></script>
+    <script type="text/javascript" src="data/lib_indexs.js"></script>
+    <script type="text/javascript" src="data/lib_datas.js"></script>
     <script type="text/javascript" src="js/dateformat.js"></script>
     <script type="text/javascript" src="js/H5lock.js"></script>
     <script type="text/javascript" src="js/datatables.min.js"></script>
@@ -33,11 +35,13 @@
                 <div class="nav_label">
                     <div class="header"><img src="images/logo_64.png"/></div>            
                     <div class="header">
-                        <p>9GridHelper</p> 
-                        <p>Ver 1.0</p>
+                        <p style="font-weight:bold;font-size:24px;">9GridHelper</p> 
+                        <p style="font-size:15px;">Ver 1.0</p>
                     </div>
                 </div>
-                <div class="logo-element"><span>IN+</span></div>
+                <div class="logo-element">
+                    <span><img src="images/logo_64.png"/></span>
+                </div>
             </li>
             <li><hr style="color: #FFFFFF;" /></li>
             <li>
@@ -71,7 +75,7 @@
             <div class="nav_header">
                 <a id="nav_btn" href="javascript:void(0);"><i class="fa fa-bars" aria-hidden="true"></i></a>
             </div>
-            <div class="nav_right"><span id="nav_top_txt">Generate</span></div>
+            <div class="nav_right"><div id="nav_top_txt" style="font-weight:bold;">Generate</div></div>
         </div>
         <div id="div_content" class="div_content">
             <div id="content_canvas" class="content_item content_item_focus">                
@@ -83,7 +87,7 @@
                     <a class="tool_btn" href="javascript:void(0)" id="bt_hand"><i class="fa fa-home fa-pencil"></i></a>
                 </div>
                 <div>
-                    <textarea id="remark" style="width:100%;height:50px;"></textarea>
+                    <textarea id="remark" style="width:100%;height:80px;"></textarea>
                 </div>
                 <div class="bottom_btn">
                     <input type="button" id="bt_save" class="btn btn-primary" style="width: 150px;" value="save"/>
@@ -94,8 +98,8 @@
                     <table id="table_my" class="table_my table table-striped table-bordered table-hover" style="clear: none;">
                         <thead>
                             <tr>
-                                <th><input type="checkbox" name="ck_all" id="ck_all"/></th>
-                                <th>Image</th>
+                                <th width="20px" style="text-align:center;"><input type="checkbox" name="ck_all" id="ck_all"/></th>
+                                <th width="50px">Image</th>
                                 <th>Description</th>
                                 <th>Create Date  </th>
                             </tr>
@@ -116,8 +120,8 @@
                         <input  type="text" id="point_fill_color" value="#FF0000" /> 
                     </div>                                       
                 </div>
-                <div><hr class="setting_hr" /></div>
-                <div class="div_relative">
+                <div style="display:none;"><hr class="setting_hr" /></div>
+                <div class="div_relative" style="display:none;">
                     <div><span class="setting_font">Shadow</span></div>
                     <div class="align_right">
                         <a href="javascript:void(0);" id="shadow_out">
@@ -130,7 +134,7 @@
                         <input type="hidden" id="shadow_in_y" />
                     </div>
                 </div>
-                <div><hr class="setting_hr" /></div>
+                <div><hr class="setting_hr" style="margin-bottom:0px;"/></div>
                 <div class="div_relative">
                     <div><span class="setting_font">Connect Line</span></div>
                     <div class="align_right">
@@ -155,7 +159,7 @@
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" >
                                 <img src="images/line_dash.png"/>
                             </button>
-                            <ul class="dropdown-menu" role="menu" style="width: 30px;">
+                            <ul class="dropdown-menu" role="menu" style="width: 30px;left:auto;right:0px;">
                                 <li data="solid">
                                 <a>
                                     <hr style="height: 1px; background: #000000;margin-left: 5px;margin-right: 5px;" /></a>

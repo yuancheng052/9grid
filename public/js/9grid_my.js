@@ -8,9 +8,9 @@
 		    	dt_table = $('#table_my').on('draw.dt',function() {
 		            init_event();
 			    }).on('init.dt',function() {
-		            init_event();
+		            //init_event();
 			    }).DataTable({
-			    	dom: 'ti<lp>',
+			    	dom: 't<"page"ipl>',
 			        data: res,
 			        columns:[{   
 			                data:null,
@@ -63,11 +63,34 @@
 	        $(this).find('.div-img-btn-hidden').removeClass('div-img-btn-show');
 	    });
 	    //clone
-	    $('a.my_clone').each(function(elm){
+	    $('a.my_clone').each(function(index, elm){
 	    	var id = $(this).parents('div.div-img').attr('id').replace('my_','');
 	    	$(this).click(function(){
-	    		H5lock.clone_2(id, H5lock.my, H5lock.lib);
+	    		H5lock.clone_2(id, H5lock.my, H5lock.lib, function(){
+	    			alert('clone success, you can see it in menu lib!');
+	    		});
 	    	});
+	    });
+	    //preview
+	    $('a.my_preview').each(function(index, elm){
+	    	var flag = 0;
+	    	var img = $(this).parents('div.div-img').find('img');
+	    	$(this).click(function(){
+	    		if(flag ==0){
+	    			img.css({
+	    			width:'200px',
+	    			height:'200px'
+	    			});
+	    			flag = 1;
+	    		}else{
+	    			img.css({
+	    			width:'100px',
+	    			height:'100px'
+	    			});
+	    			flag = 0;
+	    		}	    		
+	    	});
+	    	
 	    });
 
     }
@@ -77,14 +100,17 @@
 	    	var item_key = '';
 	    	var cks = $(':checkbox[name="ck_my"]:checked');
 	    	if(cks.length >0){
-	    		cks.each(function(i, ck){
-	    			H5lock.del_item(ck.id);		
-	    			dt_table.row($(this).parents('tr:first')).remove();
-	    		});
-	    		init_data(function(){
-	    			dt_table.draw(false);
-	    		});
-	    		
+	    		if(confirm('sure to delete!')){
+		    		cks.each(function(i, ck){
+		    			H5lock.del_item(ck.id);		
+		    			dt_table.row($(this).parents('tr:first')).remove();
+		    		});
+		    		init_data(function(){
+		    			dt_table.draw(false);
+		    		});	
+	    		}	    			    		
+	    	}else{
+	    		alert('please select one to delete!');
 	    	}
 	    	
 	    });	
