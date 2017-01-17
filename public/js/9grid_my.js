@@ -103,11 +103,12 @@
 	    		if(confirm('sure to delete!')){
 		    		cks.each(function(i, ck){
 		    			H5lock.del_item(ck.id);		
-		    			dt_table.row($(this).parents('tr:first')).remove();
+		    			//dt_table.row($(this).parents('tr:first')).remove();
 		    		});
-		    		init_data(function(){
+		    		/*init_data(function(){
 		    			dt_table.draw(false);
-		    		});	
+		    		});*/
+		    		window.location.reload();	
 	    		}	    			    		
 	    	}else{
 	    		alert('please select one to delete!');
