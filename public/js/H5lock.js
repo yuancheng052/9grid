@@ -510,6 +510,19 @@
             });
             return dtd.promise();
         }
+        H5lock.write_bfile = function(file_path, data, call_back){
+            //var dtd = $.Deferred();
+            BS.b$.Binary.base64ToImageFile({
+                filePath: file_path,
+                base64String: data,
+                dataAppend: false, 
+            }, function(info){
+                console.log('create img file success'+file_path);
+                //dtd.resolve();
+                call_back();
+            });
+            //return dtd.promise();
+        }
         H5lock.app_init();
 
 })();

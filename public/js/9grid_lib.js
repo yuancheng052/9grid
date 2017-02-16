@@ -54,7 +54,9 @@
 	    $('a.lib_clone').each(function(elm){
 	    	var id = $(this).parents('div.div-img').attr('id').replace('lib_','');
 	    	$(this).click(function(){
-	    		H5lock.clone_2(id, H5lock.lib, H5lock.my);
+	    		H5lock.clone_2(id, H5lock.lib, H5lock.my, function(){
+	    			alert('clone success, you can see it in menu my');
+	    		});
 	    	});
 	    });
 

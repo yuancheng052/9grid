@@ -115,6 +115,34 @@
 	    	}
 	    	
 	    });	
+	    $('#btn_export').click(function(){
+	    	var cks = $(':checkbox[name="ck_my"]:checked');
+	    	if(cks.length >0 ){
+	    		var index = 0;
+	    		$(':checkbox[name="ck_my"]').each(function(i, ck){
+	    			if($(ck).is(':checked')){
+	    				index = i;
+	    			}
+	    		});
+	    		BS.b$.selectOutFile({
+		    		title: "Save as",
+					prompt: "Save", 
+					canAddToRecent: true,        
+					fileName: "test01.png",       
+					directory: "",     
+					types: ['png']       
+		    	},function(){},function(obj){
+		    		var path = obj.filePath;
+
+		    		H5lock.write_bfile(path, res[index].img.split(',')[1],function(){
+		    			alert('export success!');
+		    		});
+		    	});
+	    	}else{
+	    		alert('please select one to export!');
+	    	}
+	    	
+	    });
 	})    
 })();    
 
